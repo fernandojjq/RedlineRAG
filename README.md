@@ -1,4 +1,4 @@
-# RedlineRAG — Terms of Service Risk Auditor
+# RedlineRAG - Terms of Service Risk Auditor
 
 > **Redline every clause. RAG every query. Zero data leaves your machine.**
 
