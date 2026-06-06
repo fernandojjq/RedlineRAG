@@ -1,0 +1,5 @@
+# Drop your real ToS / privacy policy documents here.
+# The MockTosGenerator writes realistic sample agreements into the
+# parent data/raw/ directory on first run if this directory is empty.
+# These files are intentionally excluded from version control because
+# real customer ToS documents are presumed confidential.

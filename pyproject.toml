@@ -1,0 +1,104 @@
+[project]
+name = "redline-rag"
+version = "0.1.0"
+description = "Local RAG pipeline that audits Terms of Service and privacy policies for hidden legal risks, unfair clauses, and privacy liabilities."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "RedlineRAG Contributors" },
+]
+keywords = [
+    "rag",
+    "retrieval-augmented-generation",
+    "terms-of-service",
+    "tos",
+    "privacy-policy",
+    "legal-tech",
+    "redline",
+    "contract-review",
+    "clause-auditor",
+    "ai",
+    "nlp",
+    "tfidf",
+    "offline",
+    "local",
+    "cli",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Legal Industry",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Office/Business :: Financial :: Investment",
+    "Topic :: Text Processing :: Indexing",
+    "Topic :: Text Processing :: Linguistic",
+]
+
+# Runtime dependencies - pinned to the same floor as requirements.txt so the
+# two files stay in sync, but expressed as a single declarative block here.
+dependencies = [
+    "numpy>=1.26,<3.0",
+    "scikit-learn>=1.4.0,<2.0",
+    "pypdf>=4.0.0",
+    "python-docx>=1.1.0",
+    "rich>=13.7.0",
+    "typer>=0.12.0",
+    "pydantic>=2.6.0",
+]
+
+[project.optional-dependencies]
+# Pytest is the only thing we need for `uv run pytest`. Anything heavier
+# (mypy, ruff, black) lives in the dev group below.
+test = [
+    "pytest>=8.0.0",
+]
+
+[project.scripts]
+# Lets users type `redline-rag scan` after `uv sync` instead of
+# `python main.py scan`.
+redline-rag = "main:main"
+
+[project.urls]
+# SEO-friendly links for the project landing.
+Homepage = "https://github.com/redline-rag/redline-rag"
+Documentation = "https://github.com/redline-rag/redline-rag#readme"
+Issues = "https://github.com/redline-rag/redline-rag/issues"
+Changelog = "https://github.com/redline-rag/redline-rag/blob/main/CHANGELOG.md"
+
+# -----------------------------------------------------------------------------
+# Build configuration. We use hatchling because it is the zero-config default
+# that ships with uv and works without any extra plugins.
+# -----------------------------------------------------------------------------
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+# -----------------------------------------------------------------------------
+# uv configuration. Forces the venv and all caches to stay on the user's
+# working disk; never the system drive.
+# -----------------------------------------------------------------------------
+[tool.uv]
+managed = true
+
+# -----------------------------------------------------------------------------
+# Tooling config. Lives here so `uv run ruff check` etc. just work later.
+# -----------------------------------------------------------------------------
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
