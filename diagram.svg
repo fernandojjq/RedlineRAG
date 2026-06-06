@@ -1,27 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 720" width="1400" height="720">
-  <rect x="0" y="0" width="1400" height="720" fill="#ffffff" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 720" width="1500" height="720">
+  <rect x="0" y="0" width="1500" height="720" fill="#ffffff" />
   <defs>    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"            markerWidth="6" markerHeight="6" orient="auto-start-reverse">      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333" />    </marker>  </defs>
-  <text x="700.0" y="50" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="bold" fill="#111"><tspan>RedlineRAG - Local RAG Pipeline for Terms of Service Risk Auditing</tspan></text>
-  <text x="700.0" y="80" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" fill="#555"><tspan>100% offline  ·  no model download  ·  no GPU  ·  no API keys  ·  no system pollution</tspan></text>
+  <text x="750.0" y="50" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="22" font-weight="bold" fill="#111"><tspan>RedlineRAG - Local RAG Pipeline for Terms of Service Risk Auditing</tspan></text>
+  <text x="750.0" y="80" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="13" font-weight="normal" fill="#555"><tspan>100% offline  ·  no model download  ·  no GPU  ·  no API keys  ·  no system pollution</tspan></text>
   <rect x="30" y="380" width="260" height="180" rx="14" ry="14" fill="#1e3a5f" stroke="#222222" stroke-width="1.5" />
   <text x="160.0" y="418" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff"><tspan>1. INGEST</tspan></text>
   <text x="160.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>.txt / .md / .pdf / .docx</tspan></text>
+  <text x="160.0" y="492" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>PDF repair for narrow</tspan></text>
+  <text x="160.0" y="510" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>column layouts</tspan></text>
   <line x1="292" y1="470.0" x2="318" y2="470.0" stroke="#333" stroke-width="2.5" marker-end="url(#arrow)" />
   <rect x="320" y="380" width="260" height="180" rx="14" ry="14" fill="#2d4a2d" stroke="#222222" stroke-width="1.5" />
   <text x="450.0" y="418" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff"><tspan>2. CHUNK</tspan></text>
-  <text x="450.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>Recursive splitter</tspan><tspan x='450.0' dy='1.1em'>600 chars / 80 overlap</tspan></text>
+  <text x="450.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>Sentence-Aware Chunker</tspan></text>
+  <text x="450.0" y="492" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>paragraphs to sentences,</tspan></text>
+  <text x="450.0" y="510" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>parent context attached</tspan></text>
   <line x1="582" y1="470.0" x2="608" y2="470.0" stroke="#333" stroke-width="2.5" marker-end="url(#arrow)" />
   <rect x="610" y="380" width="260" height="180" rx="14" ry="14" fill="#5f3a1e" stroke="#222222" stroke-width="1.5" />
   <text x="740.0" y="418" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff"><tspan>3. INDEX</tspan></text>
-  <text x="740.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>TF-IDF + L2 norm</tspan><tspan x='740.0' dy='1.1em'>joblib / npz</tspan></text>
+  <text x="740.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>TF-IDF + L2 norm</tspan></text>
+  <text x="740.0" y="492" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>word 1-2 grams, stop-words</tspan></text>
+  <text x="740.0" y="510" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>joblib / npz / jsonl</tspan></text>
   <line x1="872" y1="470.0" x2="898" y2="470.0" stroke="#333" stroke-width="2.5" marker-end="url(#arrow)" />
   <rect x="900" y="380" width="260" height="180" rx="14" ry="14" fill="#4a2d5f" stroke="#222222" stroke-width="1.5" />
-  <text x="1030.0" y="418" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff"><tspan>4. QUERY</tspan></text>
-  <text x="1030.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>Cosine top-k</tspan><tspan x='1030.0' dy='1.1em'>similarity floor 0.05</tspan></text>
+  <text x="1030.0" y="418" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff"><tspan>4. QUERY + RERANK</tspan></text>
+  <text x="1030.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>Vector top-k (4x overfetch)</tspan></text>
+  <text x="1030.0" y="492" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>Token-Overlap Reranker</tspan></text>
+  <text x="1030.0" y="510" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>min overlap floor: 0.3</tspan></text>
   <line x1="1162" y1="470.0" x2="1188" y2="470.0" stroke="#333" stroke-width="2.5" marker-end="url(#arrow)" />
   <rect x="1190" y="380" width="260" height="180" rx="14" ry="14" fill="#5f1e1e" stroke="#222222" stroke-width="1.5" />
   <text x="1320.0" y="418" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="16" font-weight="bold" fill="#fff"><tspan>5. AUDIT</tspan></text>
-  <text x="1320.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>10 risk families</tspan></text>
+  <text x="1320.0" y="470" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#fff"><tspan>2-Stage Risk Auditor</tspan></text>
+  <text x="1320.0" y="492" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>primary + co-located,</tspan></text>
+  <text x="1320.0" y="510" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#fff"><tspan>10 risk families</tspan></text>
   <rect x="30" y="130" width="260" height="130" rx="14" ry="14" fill="#fef9c3" stroke="#aa8800" stroke-width="1.5" />
   <text x="160.0" y="165" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#3a2e00"><tspan>Mock ToS Generator</tspan></text>
   <text x="160.0" y="205" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="11" font-weight="normal" fill="#3a2e00"><tspan>3 sample agreements</tspan></text>
@@ -32,11 +42,11 @@
   <text x="1030.0" y="195" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#222"><tspan>data selling</tspan></text>
   <text x="1030.0" y="225" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="normal" fill="#222"><tspan>device fingerprinting</tspan></text>
   <line x1="1030.0" y1="245" x2="1030.0" y2="378" stroke="#333" stroke-width="2.0" marker-end="url(#arrow)" />
-  <rect x="1210.0" y="595" width="220" height="100" rx="14" ry="14" fill="#fff5f5" stroke="#5f1e1e" stroke-width="1.5" />
-  <text x="1320.0" y="625" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#5f1e1e"><tspan>Risk Report</tspan></text>
-  <text x="1320.0" y="655" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5f1e1e"><tspan>CRITICAL  ·  HIGH</tspan></text>
-  <text x="1320.0" y="678" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5f1e1e"><tspan>MEDIUM  ·  LOW</tspan></text>
-  <line x1="1320.0" y1="562" x2="1320.0" y2="595" stroke="#5f1e1e" stroke-width="2.0" marker-end="url(#arrow)" />
+  <rect x="1210.0" y="595" width="260" height="100" rx="14" ry="14" fill="#fff5f5" stroke="#5f1e1e" stroke-width="1.5" />
+  <text x="1340.0" y="625" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="14" font-weight="bold" fill="#5f1e1e"><tspan>Risk Report</tspan></text>
+  <text x="1340.0" y="655" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5f1e1e"><tspan>CRITICAL  ·  HIGH</tspan></text>
+  <text x="1340.0" y="678" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#5f1e1e"><tspan>MEDIUM  ·  LOW</tspan></text>
+  <line x1="1340.0" y1="562" x2="1340.0" y2="595" stroke="#5f1e1e" stroke-width="2.0" marker-end="url(#arrow)" />
   <rect x="610.0" y="620" width="260" height="80" rx="14" ry="14" fill="#eef2f7" stroke="#5f3a1e" stroke-width="1.5" />
   <text x="740.0" y="648" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="12" font-weight="bold" fill="#222"><tspan>data/vector_store/</tspan></text>
   <text x="740.0" y="672" text-anchor="middle" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-size="10" font-weight="normal" fill="#333"><tspan>vocabulary.joblib · vectors.npz</tspan></text>
