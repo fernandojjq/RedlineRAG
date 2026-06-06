@@ -35,8 +35,8 @@ It is designed for:
 
 The name carries the entire thesis in two syllables:
 
-- **Redline** — a real legal term for marking up, negotiating, or flagging problematic clauses in a contract. It is what a junior associate at a law firm does at 2 AM the night before a deal closes.
-- **RAG** — Retrieval-Augmented Generation. The architectural pattern that lets a model answer questions grounded in *your* corpus, not its training data.
+- **Redline** - a real legal term for marking up, negotiating, or flagging problematic clauses in a contract. It is what a junior associate at a law firm does at 2 AM the night before a deal closes.
+- **RAG** - Retrieval-Augmented Generation. The architectural pattern that lets a model answer questions grounded in *your* corpus, not its training data.
 
 The combination captures what this project does: it redlines ToS documents (finds the unfair clauses) using a RAG pipeline (retrieves relevant evidence, generates a structured risk report). It is also an SEO-friendly, distinctive name that ranks for searches like *ToS redline tool*, *RAG legal auditor*, *contract risk RAG*, and *privacy policy redline AI*.
 
@@ -109,13 +109,13 @@ flowchart LR
 
 **Five stages, all local:**
 
-1. **Ingestion** — drop `.txt`, `.md`, `.pdf`, or `.docx` files into `data/raw/`. If that directory is empty, the `MockTosGenerator` writes three realistic sample agreements with planted legal traps.
-2. **Sentence-aware chunking** — the `SentenceAwareChunker` splits documents on paragraph boundaries first, then sentence boundaries (`. `, `? `, `! `). Each sentence becomes its own indexed unit, but the parent paragraph is kept attached. This is "late chunking lite": retrieval is fine-grained (one sentence = one match), but the auditor still has the full paragraph for context.
-3. **Indexing** — a `TfidfEmbedder` (scikit-learn, word 1-2 grams, English stop-words removed) projects every sentence into a sparse vector. L2-normalization makes dot-product equal to cosine similarity. The vectorizer, vectors, and chunk metadata are persisted to `data/vector_store/`.
-4. **Query + rerank** — a user question is encoded with the same vectorizer. The retriever pulls 4x the requested `top_k` candidates from the vector index, then the `TokenOverlapReranker` blends vector similarity with exact token overlap against the query. The blended top-k is what the auditor sees. This corrects false positives where a chunk shares statistical n-gram weight with the query but is actually about a different topic.
-5. **Audit (two-stage)** — the `RiskAuditor` runs the risk patterns twice per hit:
-   - **Primary match** — against the matched sentence only. High-confidence path; this is what the user actually asked about.
-   - **Co-located match** — against the rest of the parent paragraph (excluding the matched sentence). These get marked "co-located" and demoted by one severity tier. This is how we still tell the user "this paragraph also contains a data-selling clause nearby" without confusing it with the question they actually asked.
+1. **Ingestion** - drop `.txt`, `.md`, `.pdf`, or `.docx` files into `data/raw/`. If that directory is empty, the `MockTosGenerator` writes three realistic sample agreements with planted legal traps.
+2. **Sentence-aware chunking** - the `SentenceAwareChunker` splits documents on paragraph boundaries first, then sentence boundaries (`. `, `? `, `! `). Each sentence becomes its own indexed unit, but the parent paragraph is kept attached. This is "late chunking lite": retrieval is fine-grained (one sentence = one match), but the auditor still has the full paragraph for context.
+3. **Indexing** - a `TfidfEmbedder` (scikit-learn, word 1-2 grams, English stop-words removed) projects every sentence into a sparse vector. L2-normalization makes dot-product equal to cosine similarity. The vectorizer, vectors, and chunk metadata are persisted to `data/vector_store/`.
+4. **Query + rerank** - a user question is encoded with the same vectorizer. The retriever pulls 4x the requested `top_k` candidates from the vector index, then the `TokenOverlapReranker` blends vector similarity with exact token overlap against the query. The blended top-k is what the auditor sees. This corrects false positives where a chunk shares statistical n-gram weight with the query but is actually about a different topic.
+5. **Audit (two-stage)** - the `RiskAuditor` runs the risk patterns twice per hit:
+   - **Primary match** - against the matched sentence only. High-confidence path; this is what the user actually asked about.
+   - **Co-located match** - against the rest of the parent paragraph (excluding the matched sentence). These get marked "co-located" and demoted by one severity tier. This is how we still tell the user "this paragraph also contains a data-selling clause nearby" without confusing it with the question they actually asked.
 
 ---
 
@@ -125,8 +125,8 @@ Real Terms of Service documents mix unrelated clauses in a single paragraph. The
 
 Sentence-level chunking fixes this structurally: a sentence about "amend these Terms" is a separate indexed unit from a sentence about "sell personal data", even when they share the same paragraph. The auditor's `match_location` field then makes the relationship explicit in the report:
 
-- `primary` — the pattern triggered on the sentence that scored highest against the user's question.
-- `co-located` — the pattern triggered on a sibling sentence of the same paragraph; demoted one tier.
+- `primary` - the pattern triggered on the sentence that scored highest against the user's question.
+- `co-located` - the pattern triggered on a sibling sentence of the same paragraph; demoted one tier.
 
 The `TokenOverlapReranker` is a cheap (no-model) BM25-lite that catches the remaining false positives: a chunk that shares vocabulary with the query but is actually about a different topic. It blends vector similarity with exact token overlap, so a sentence that says "perpetual irrevocable license" wins the rerank for a "perpetual irrevocable content license" query over a sentence that only mentions "perpetual" in passing.
 
@@ -252,9 +252,9 @@ Drop any combination of `.txt`, `.md`, `.pdf`, or `.docx` files into `data/raw/`
 
 The system is **completely self-contained**. If `data/raw/` is empty on launch, the `MockTosGenerator` writes three realistic Terms of Service samples into that directory:
 
-- **Brightwave Social** — a social network with aggressive data selling, tracking pixels, and unilateral terms changes.
-- **Quickbid Marketplace** — an e-commerce platform with binding arbitration, indemnification, and cross-border data transfer.
-- **Nimblecloud** — a B2B cloud service with arbitration, indemnification, and standard contractual clauses.
+- **Brightwave Social** - a social network with aggressive data selling, tracking pixels, and unilateral terms changes.
+- **Quickbid Marketplace** - an e-commerce platform with binding arbitration, indemnification, and cross-border data transfer.
+- **Nimblecloud** - a B2B cloud service with arbitration, indemnification, and standard contractual clauses.
 
 Each sample has a different risk profile so the auditor produces a varied, useful first-run report. The samples are overwritten only if you delete them and restart, so your real documents are never clobbered.
 
@@ -268,10 +268,10 @@ The test suite is small but covers the four failure modes that actually break a 
 .venv\Scripts\python.exe -m pytest tests/ -v
 ```
 
-- `test_pipeline_runs_end_to_end` — full happy path: ingest + index + query.
-- `test_pipeline_handles_repeat_runs` — second run reuses the persisted index.
-- `test_similarity_floor_blocks_garbage_query` — a nonsense query returns no hits.
-- `test_ingest_fails_cleanly_when_no_mocks` — disabling the mock generator with an empty input raises instead of silently passing.
+- `test_pipeline_runs_end_to_end` - full happy path: ingest + index + query.
+- `test_pipeline_handles_repeat_runs` - second run reuses the persisted index.
+- `test_similarity_floor_blocks_garbage_query` - a nonsense query returns no hits.
+- `test_ingest_fails_cleanly_when_no_mocks` - disabling the mock generator with an empty input raises instead of silently passing.
 
 All tests use a temporary directory and never touch the user's real data.
 

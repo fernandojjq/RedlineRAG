@@ -79,6 +79,31 @@ class PipelineConfig(BaseModel):
         ),
     )
 
+    # --- Reranker --------------------------------------------------------------
+    # The reranker blends vector similarity with exact token overlap. The
+    # two knobs below control its behaviour.
+    reranker_alpha: float = Field(
+        default=0.6,
+        ge=0.0,
+        le=1.0,
+        description=(
+            "Blend weight for vector vs overlap. 1.0 = pure vector score, "
+            "0.0 = pure token overlap. 0.6 favours vector but lets overlap "
+            "correct obvious mismatches."
+        ),
+    )
+    reranker_min_overlap_ratio: float = Field(
+        default=0.3,
+        ge=0.0,
+        le=1.0,
+        description=(
+            "Hard floor on token overlap. A candidate is dropped before "
+            "scoring if it shares fewer than this fraction of query tokens "
+            "(after stop-word removal). 0.3 means: must share >=30% of "
+            "query tokens. 0.0 disables the floor."
+        ),
+    )
+
     # --- Embeddings ------------------------------------------------------------
     # We use a TF-IDF word-level n-gram embedding rather than a transformer
     # model. Two reasons:

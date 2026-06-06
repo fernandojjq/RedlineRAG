@@ -72,8 +72,12 @@ class RagPipeline:
         self._auditor = RiskAuditor()
         self._store = LocalVectorStore(self._config)
         # Reranker: token-overlap with the query, blended with vector score.
-        # Lives at the orchestrator level so tests can swap it out.
-        self._reranker = TokenOverlapReranker()
+        # Configurable through PipelineConfig; defaults are tuned for legal
+        # text with dense vocabulary.
+        self._reranker = TokenOverlapReranker(
+            alpha=self._config.reranker_alpha,
+            min_overlap_ratio=self._config.reranker_min_overlap_ratio,
+        )
         self._documents: list[LoadedDocument] = []
         self._chunks: list[Chunk] = []
         self._matrix: EmbeddingMatrix | None = None

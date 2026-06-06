@@ -12,6 +12,7 @@ pipeline is allowed to run with a partial corpus.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
@@ -62,8 +63,73 @@ def _read_pdf(path: Path) -> str:
             _LOGGER.warning("Failed to extract page %d from %s: %s", index, path.name, exc)
             text = ""
         if text:
-            page_texts.append(text)
-    return "\n".join(page_texts).strip()
+            page_texts.append(_repair_pdf_text(text))
+    return "\n\n".join(page_texts).strip()
+
+
+# A lot of legal PDFs are typeset in narrow columns. pypdf's word-level
+# extraction then returns one word per line, with single-space characters
+# occupying their own lines. We detect that layout and coalesce the
+# short lines back into proper prose.
+_SHORT_LINE_THRESHOLD = 30  # chars - if the median line is shorter, treat as broken
+_BULLET_PATTERN = re.compile(r"^\s*[\u25cf\u2022\-\*]\s")  # filled circle, bullet, dash, asterisk
+
+
+def _repair_pdf_text(text: str) -> str:
+    """Repair pypdf output for PDFs that came out one-word-per-line.
+
+    Heuristic: if the median non-blank line length is below the
+    threshold, we assume the PDF is using a narrow column layout and
+    pypdf split every word (and even single spaces) onto its own line.
+    In that case we coalesce the page into a single line of prose, then
+    re-introduce paragraph breaks at obvious markers: bullet points
+    (filled circle, bullet, dash, asterisk at the start of a line) and
+    fully-blank lines (length-0, not just whitespace).
+
+    If the median line length is normal, we leave the text alone - the
+    extraction was already fine.
+    """
+    lines = text.splitlines()
+    non_blank = [line for line in lines if line.strip()]
+    if len(non_blank) < 4:
+        # Too few lines to judge. Leave as-is.
+        return text
+    median_length = sorted(len(line) for line in non_blank)[len(non_blank) // 2]
+    if median_length >= _SHORT_LINE_THRESHOLD:
+        return text
+
+    # Broken layout detected. Walk the lines, building prose, and break
+    # a new paragraph whenever we see a bullet marker or a TRULY empty
+    # line (length 0). Whitespace-only lines are treated as soft breaks
+    # - just a continuation of the current prose, because pypdf emits
+    # those for inter-word spaces in narrow-column layouts.
+    paragraphs: list[str] = []
+    current: list[str] = []
+
+    def flush() -> None:
+        if current:
+            paragraphs.append(" ".join(current))
+            current.clear()
+
+    for line in lines:
+        if not line:
+            # Truly empty line: hard paragraph break.
+            flush()
+            continue
+        stripped = line.strip()
+        if not stripped:
+            # Whitespace-only line: just a soft break, keep building.
+            continue
+        if _BULLET_PATTERN.match(stripped):
+            # Bullet: start a new paragraph.
+            flush()
+            current.append(stripped)
+            continue
+        current.append(stripped)
+    flush()
+
+    # Collapse internal multi-spaces inside each paragraph.
+    return "\n\n".join(re.sub(r"\s+", " ", p) for p in paragraphs)
 
 
 def _read_docx(path: Path) -> str:

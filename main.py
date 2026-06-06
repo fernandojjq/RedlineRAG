@@ -105,13 +105,20 @@ def _render_assessment(result, console: Console) -> None:
             location_tag = "[cyan]primary[/cyan]"
         else:
             location_tag = "[dim]co-located[/dim]"
+        # Off-topic tag: the pattern fired but no key signal matched, so
+        # the cited text is probably about a different topic. We show it
+        # demoted and clearly marked so the user does not trust it.
+        if finding.off_topic:
+            topic_tag = "[yellow]off-topic[/yellow]"
+        else:
+            topic_tag = "[green]on-topic[/green]"
         mitigation_note = (
             "[green]Mitigating language detected in same text.[/green]"
             if finding.mitigations_detected
             else "[red]No mitigating language detected.[/red]"
         )
         body = (
-            f"[bold]{finding.family}[/bold]  ({location_tag})\n"
+            f"[bold]{finding.family}[/bold]  ({location_tag}  ·  {topic_tag})\n"
             f"[dim]Source:[/dim] {finding.document_title}  "
             f"[dim]Score:[/dim] {finding.score:.3f}\n\n"
             f"{finding.description}\n\n"

@@ -86,7 +86,13 @@ def _split_into_sentences(paragraph: str) -> list[str]:
     under-splitting: an auditor looking at a too-short "sentence" will
     just not find any pattern, which is the right answer for noise.
     """
-    cleaned = _clean_paragraph(paragraph)
+    # First collapse ALL whitespace (including newlines) to single
+    # spaces. The original file may have line breaks inside a sentence
+    # (e.g. a 50-column PDF or a hand-formatted agreement), and the
+    # auditor's regex patterns use literal whitespace. Without this
+    # normalization, a chunk like "permanently\ndelete" would not
+    # match the pattern "permanently delete".
+    cleaned = re.sub(r"\s+", " ", paragraph).strip()
     if not cleaned:
         return []
 

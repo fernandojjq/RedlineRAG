@@ -282,6 +282,162 @@ def test_reranker_promotes_exact_term_overlap() -> None:
     assert "arbitration" in reranked[0].chunk.text.lower()
 
 
+def test_reranker_drops_low_overlap_candidates() -> None:
+    """A candidate whose token overlap with the query is below the
+    `min_overlap_ratio` must be dropped before scoring. This is the
+    fix for the false-positive where a sentence shares one statistical
+    n-gram with the query but is about a different topic.
+    """
+    reranker = TokenOverlapReranker(alpha=0.5, min_overlap_ratio=0.4)
+
+    # Query has 4 meaningful tokens: "tracking", "pixels", "device",
+    # "fingerprinting". The first candidate shares 4/4 = 1.0; the second
+    # shares 1/4 = 0.25, below the 0.4 floor, so it must be dropped.
+    hits = [
+        _make_hit(
+            "tracking pixels device fingerprinting technologies",
+            vector_score=0.30,
+        ),
+        _make_hit(
+            "share personal information advertising partners data brokers",
+            vector_score=0.32,
+        ),
+    ]
+    reranked = reranker.rerank("tracking pixels device fingerprinting", hits)
+    assert len(reranked) == 1, (
+        f"Expected only the on-topic candidate to survive; got {len(reranked)}"
+    )
+    assert "tracking" in reranked[0].chunk.text.lower()
+
+
+def test_tracking_query_does_not_return_data_selling(
+    isolated_workspace: PipelineConfig,
+) -> None:
+    """Regression for the QA-pass issue: 'tracking pixels and device
+    fingerprinting' should NOT produce a 'Broad data selling' finding,
+    even though the data-selling sentence shares the word 'device' with
+    the query. The new min_overlap_ratio + key_signals combination
+    filters the off-topic candidate.
+    """
+    pipeline = RagPipeline(isolated_workspace)
+    pipeline.ingest()
+    pipeline.index(force_rebuild=True)
+
+    result = pipeline.ask("tracking pixels and device fingerprinting")
+
+    families = {finding.family for finding in result.assessment.findings}
+    assert "Aggressive tracking & device fingerprinting" in families, (
+        f"Expected 'Aggressive tracking' finding. Got: {families}"
+    )
+    # The data-selling family must not appear as on-topic for this query.
+    # It may still appear as off-topic if it slipped through, but the
+    # audit system should not surface it as a confident result.
+    on_topic_data_selling = [
+        finding
+        for finding in result.assessment.findings
+        if finding.family == "Broad data selling & third-party sharing"
+        and not finding.off_topic
+    ]
+    assert not on_topic_data_selling, (
+        "Data-selling family must not be on-topic for a tracking query."
+    )
+
+
+def test_unilateral_change_pattern_covers_real_world_phrasings(
+    isolated_workspace: PipelineConfig,
+) -> None:
+    """Regression for the QA-pass issue: queries phrased like real
+    ToS language ('modify this Agreement', 'update this Agreement')
+    must trigger the unilateral-change family.
+
+    The mock data uses 'modify... these Terms' phrasing which already
+    matched, but the new pattern additions ('modify this Agreement',
+    'we may update this Agreement') should let the family also match
+    real-world documents that use slightly different wording.
+    """
+    from src.generation.auditor import RiskAuditor
+    from src.generation.auditor import RISK_PATTERNS
+
+    # Find the unilateral-change pattern in the library.
+    pattern = next(
+        p for p in RISK_PATTERNS if p.family == "Unilateral right to change terms"
+    )
+    # These real-world phrasings should each trigger at least one
+    # pattern AND have at least one matching key signal.
+    real_world_clauses = [
+        "We reserve the right to modify this Agreement at any time.",
+        "We may update these Terms from time to time in our sole discretion.",
+        "We may amend this Agreement at any time, with or without notice.",
+        "We may change this Agreement at any time by posting the revised version.",
+        "The updated Terms will be effective immediately upon posting.",
+    ]
+    for clause in real_world_clauses:
+        assert pattern.find_triggers(clause), (
+            f"Pattern must trigger on real-world phrasing: {clause!r}"
+        )
+        assert pattern.has_key_signal(clause), (
+            f"Pattern must recognise the key signal in: {clause!r}"
+        )
+
+
+def test_off_topic_pattern_is_demoted() -> None:
+    """If a pattern's triggers fire but no key signal is present in the
+    text, the finding is marked off_topic and demoted one tier."""
+    from src.generation.auditor import (
+        RiskAuditor,
+        RiskPattern,
+        RiskSeverity,
+    )
+
+    # Build a pattern with key_signals that the test text does NOT contain.
+    pattern = RiskPattern(
+        family="Test family",
+        severity=RiskSeverity.CRITICAL,
+        description="Test",
+        trigger_patterns=(r"share.{0,30}partners",),
+        key_signals=("data brokers", "sell"),
+    )
+    auditor = RiskAuditor(patterns=[pattern])
+
+    # Text triggers the regex ("share... partners") but has none of the
+    # key signals ("data brokers", "sell").
+    hit = _make_hit("We may share technical partners with our service.", 0.5)
+    assessment = auditor.audit("test", [hit])
+    assert len(assessment.findings) == 1
+    finding = assessment.findings[0]
+    assert finding.off_topic is True
+    # CRITICAL -> demoted once to HIGH.
+    assert finding.severity == RiskSeverity.HIGH
+
+
+def test_absence_of_notice_is_not_mitigating() -> None:
+    """Regression: the 'without prior notice' phrasing must NOT be
+    treated as a mitigating promise. A clause that says 'we may change
+    terms without prior notice' is the OPPOSITE of mitigation - it is
+    the worst case. Earlier the mitigating pattern `r'prior notice'`
+    matched the substring 'prior notice' in 'without prior notice',
+    demoting severity and hiding the risk. The fix uses a negative
+    lookbehind: `r'(?<!without )prior notice'`.
+    """
+    from src.generation.auditor import (
+        RiskAuditor,
+        RiskSeverity,
+    )
+
+    pattern = next(
+        p for p in RiskAuditor()._patterns
+        if p.family == "Unilateral right to change terms"
+    )
+    # "without prior notice" must NOT register as mitigation.
+    assert not pattern.has_mitigating_language(
+        "We may modify these terms at any time, without prior notice."
+    ), "'without prior notice' should not be treated as a mitigating promise"
+    # "we'll give 30 days notice" MUST register as mitigation.
+    assert pattern.has_mitigating_language(
+        "We will give you 30 days notice for any material change."
+    ), "an actual notice promise should still be treated as mitigation"
+
+
 def _make_hit(text: str, vector_score: float) -> RetrievedChunk:
     """Test helper: build a RetrievedChunk with a fake Chunk."""
     chunk = Chunk(
