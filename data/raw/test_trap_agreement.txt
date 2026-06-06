@@ -1,0 +1,77 @@
+REDLINE-RAG TEST TRAP
+======================
+
+This is an intentionally dangerous Terms of Service document used to
+verify that the RedlineRAG auditor's risk-detection patterns actually
+work. It contains clauses that should be flagged as CRITICAL or HIGH.
+If the auditor returns no findings, the system is broken.
+
+1. BINDING ARBITRATION (CRITICAL TRAP)
+---------------------------------------
+Any dispute arising out of or relating to this Agreement shall be
+resolved exclusively by binding individual arbitration administered by
+the American Arbitration Association. The user hereby waives the right
+to participate in any class action, class arbitration, or other
+representative proceeding.
+
+2. PERPETUAL IRREVOCABLE LICENSE (HIGH TRAP)
+--------------------------------------------
+By uploading any content, the user grants the company a perpetual,
+irrevocable, royalty-free, worldwide license to use, reproduce, modify,
+publish, and sublicense such content for any commercial purpose
+whatsoever, with no obligation of attribution or compensation.
+
+3. DATA SELLING (CRITICAL TRAP)
+-------------------------------
+We reserve the right to sell, rent, lease, or otherwise transfer the
+user's personal information, browsing history, device identifiers, and
+location data to advertising partners, data brokers, marketing
+networks, and any other third party for targeted advertising and
+audience profiling.
+
+4. UNILATERAL TERMS CHANGES (HIGH TRAP)
+----------------------------------------
+We may modify, amend, change, or update these Terms at any time, in our
+sole discretion, without prior notice to the user. The user's continued
+use of the Service after any such change constitutes acceptance of the
+modified Terms.
+
+5. ACCOUNT TERMINATION (HIGH TRAP)
+----------------------------------
+We may suspend, limit, or terminate the user's account and permanently
+delete all associated data, content, and records at any time, with or
+without cause, and with or without notice. We have no obligation to
+provide a backup of the deleted data.
+
+6. TRACKING PIXELS AND DEVICE FINGERPRINTING (HIGH TRAP)
+---------------------------------------------------------
+The Service uses cookies, web beacons, tracking pixels, device
+fingerprinting technologies, and advertising IDs to collect information
+about the user's device, browser, IP address, and interaction patterns.
+
+7. LIABILITY DISCLAIMER (HIGH TRAP)
+------------------------------------
+THE SERVICE IS PROVIDED ON AN AS-IS AND AS-AVAILABLE BASIS WITHOUT
+WARRANTIES OF ANY KIND. IN NO EVENT SHALL THE COMPANY BE LIABLE FOR
+ANY DAMAGES ARISING OUT OF THE USE OF THE SERVICE.
+
+8. USER INDEMNIFICATION (MEDIUM TRAP)
+--------------------------------------
+The user agrees to indemnify, defend, and hold harmless the company
+from any claim, demand, action, or proceeding arising from the user's
+use of the Service.
+
+9. INTERNATIONAL DATA TRANSFER (MEDIUM TRAP)
+--------------------------------------------
+User information may be transferred to, stored, and processed in the
+United States or any other country in which the company or its service
+providers operate.
+
+10. PAYMENT CARD STORAGE (CRITICAL TRAP)
+-----------------------------------------
+The Service stores full payment card numbers, expiration dates, and
+CVV codes on the company's servers for the purpose of fraud detection
+and customer convenience.
+
+END OF TEST TRAP
+================

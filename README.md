@@ -67,45 +67,11 @@ The default scan runs one focused query per family, retrieves the top-k relevant
 
 ![RedlineRAG architecture diagram](diagram.svg)
 
-```mermaid
-flowchart LR
-    subgraph INGEST["1. Ingestion"]
-        A[".txt / .md / .pdf / .docx files"] --> B["Document Loader"]
-        B -->|empty dir| M["Mock ToS Generator<br/>(3 sample agreements)"]
-        M --> B
-    end
-
-    subgraph CHUNK["2. Chunking"]
-        B --> C["Sentence-Aware Chunker<br/>paragraphs -> sentences"]
-        C --> D["~one sentence per indexed unit<br/>+ parent paragraph attached"]
-    end
-
-    subgraph INDEX["3. Indexing"]
-        D --> E["TF-IDF Embedder<br/>(1-2 word n-grams, stop-words off)"]
-        E --> F[("Local Vector Store<br/>data/vector_store/")]
-    end
-
-    subgraph QUERY["4. Query + Rerank"]
-        Q["User question<br/>e.g. 'binding arbitration'"] --> QE["Encode query"]
-        QE --> V["Vector top-k candidates<br/>(4x overfetch)"]
-        V --> RR["Token-Overlap Reranker<br/>blend vector + exact match"]
-    end
-
-    subgraph AUDIT["5. Audit"]
-        RR --> R["Retrieved sentences"]
-        R --> P["Primary match<br/>(sentence-level)"]
-        R --> CL["Co-located match<br/>(parent paragraph, demoted)"]
-        P --> RP["Structured risk report"]
-        CL --> RP
-    end
-
-    F --> V
-    style INGEST fill:#1e3a5f,stroke:#0d1f33,color:#fff
-    style CHUNK fill:#2d4a2d,stroke:#1a2e1a,color:#fff
-    style INDEX fill:#5f3a1e,stroke:#331f0d,color:#fff
-    style QUERY fill:#4a2d5f,stroke:#2e1a33,color:#fff
-    style AUDIT fill:#5f1e1e,stroke:#330d0d,color:#fff
-```
+> The SVG above is the canonical architecture diagram. We tried to ship a
+> Mermaid block alongside it, but GitHub's Mermaid renderer rejects
+> several features we wanted (subgraph titles with quotes, `<br/>` in some
+> node labels, the multi-stage `style` block) - so the SVG is the single
+> source of truth.
 
 **Five stages, all local:**
 

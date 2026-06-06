@@ -65,7 +65,16 @@ data/vector_store/
 # run, so we exclude it from version control too.
 data/raw/*
 !data/raw/.gitkeep
+# EXCEPTION: test_trap_agreement.txt is a fixed test fixture, not user
+# input. The auditor test suite and manual smoke runs depend on it being
+# there. If you drop a real ToS into data/raw/ the gitignore still keeps
+# your file private.
+!data/raw/test_trap_agreement.txt
 data/mock/
+# Generic catch-all: any *.txt dropped directly into data/ (not data/raw/
+# or data/vector_store/) is almost certainly a one-off output from a
+# manual run, not source. Keep the repo clean.
+/data/*.txt
 
 # --- Logs (the rule: never exceed 1 GB; always clean) --------------------------
 *.log
